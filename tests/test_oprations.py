@@ -8,4 +8,4 @@ def terst_sun():
     assert sub(5,2) == 3
     assert sub(5,3) == 2
     assert sub(5,4) == 1
-    assert sub(5,5) == 0
+    assert sub(5,6) == -1
