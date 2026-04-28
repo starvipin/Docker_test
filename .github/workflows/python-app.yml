@@ -34,8 +34,4 @@ jobs:
 
       # Step 5: Tests run karna
       - name: Run tests
-<<<<<<< HEAD
         run: uv run pytest
-=======
-        run: uv run pytest
->>>>>>> 08a6b3701a6866eaee197005f6200f5a4769f430
