@@ -1,4 +1,4 @@
-name: Python CI
+name: Docker CI
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  test:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,21 +17,10 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
-      # Step 2: 'uv' package manager ko install karna
-      - name: Install uv
-        uses: astral-sh/setup-uv@v3
+      # Step 2: Docker image build karna
+      - name: Build Docker Image
+        run: docker build -t docker-python-app .
 
-      # Step 3: Python environment setup karna
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-
-      # Step 4: Dependencies install karna (using uv)
-      - name: Install dependencies
-        run: |
-          uv sync --all-extras --dev
-
-      # Step 5: Tests run karna
-      - name: Run tests
-        run: uv run pytest
+      # Step 3: Container ke andar tests run karna
+      - name: Run Tests in Docker Container
+        run: docker run docker-python-app
