@@ -1,26 +1,34 @@
-name: Flask Docker CI
+name: Flask Docker CI/CD
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  build-and-test:
+  build-test-and-push:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Code checkout karo
       - name: Check out code
         uses: actions/checkout@v4
 
+      # 2. Image Build karo (Aapke Docker username ke prefix ke sath)
       - name: Build Docker Image
-        # Image ka naya naam rakh diya hai
-        run: docker build -t docker-flask-app .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/docker-flask-app:latest .
 
+      # 3. Pehle Test run karo
       - name: Run Tests in Docker Container
-        # Yahan hum Dockerfile ke default CMD ko override kar rahe hain
-        # Taaki server start na ho, balki sirf tests run hon
-        run: docker run docker-flask-app uv run pytest
+        run: docker run ${{ secrets.DOCKER_USERNAME }}/docker-flask-app:latest uv run pytest
+
+      # 4. Docker Hub par Login karo (Secrets ka use karke)
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 5. Image ko Docker Hub par push kar do
+      - name: Push Image to Docker Hub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/docker-flask-app:latest
