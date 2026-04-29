@@ -1,4 +1,4 @@
-name: Docker CI
+name: Flask Docker CI
 
 on:
   push:
@@ -13,14 +13,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Code ko repository se uthana
       - name: Check out code
         uses: actions/checkout@v4
 
-      # Step 2: Docker image build karna
       - name: Build Docker Image
-        run: docker build -t docker-python-app .
+        # Image ka naya naam rakh diya hai
+        run: docker build -t docker-flask-app .
 
-      # Step 3: Container ke andar tests run karna
       - name: Run Tests in Docker Container
-        run: docker run docker-python-app
+        # Yahan hum Dockerfile ke default CMD ko override kar rahe hain
+        # Taaki server start na ho, balki sirf tests run hon
+        run: docker run docker-flask-app uv run pytest
